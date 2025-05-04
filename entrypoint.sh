@@ -18,8 +18,13 @@ else
 fi
 
 if [ $? -eq 0 ]; then
-  find /home/build/.cache -name "*.zst" -exec mv {} "${RELEASE_DIR}" \;
+  #find /home/build/.cache -name "*.zst" -exec mv {} "${RELEASE_DIR}" \;
+  find /home/build/.cache -name "*.zst" | while read -r filepath; do
+    filename=$(basename "$filepath")
+    dir=$(dirname "$filepath")
+    newname=$(echo "$filename" | sed -E 's/-[0-9]+:([0-9]+\.[0-9]+)/-\1/')
+    mv "$filepath" "${RELEASE_DIR}/${newname}"
+  done
 else
   exit $?
 fi
-
